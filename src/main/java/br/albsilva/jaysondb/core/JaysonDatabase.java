@@ -14,12 +14,12 @@ public class JaysonDatabase {
         this.dbDir = dbDir;
     }
 
-    public JaysonCollection getCollection(String name) throws IOException {
+    public JaysonCollection getCollection(String name, Class type) throws IOException {
         String collectionFilePath = String.format("%s/%s.collection.json", dbDir, name);
         File collectionFile = new File(collectionFilePath);
         if(!collectionFile.exists())
             createCollection(collectionFile);
-        return new JaysonCollection(collectionFile);
+        return new JaysonCollection(collectionFile, type);
     }
 
     private void createCollection(File config) throws IOException {

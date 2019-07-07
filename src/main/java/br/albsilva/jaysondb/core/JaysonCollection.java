@@ -1,7 +1,8 @@
 package br.albsilva.jaysondb.core;
 
+import br.albsilva.jaysondb.core.query.JaysonQuery;
+import br.albsilva.jaysondb.core.query.JaysonQueryBuilder;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -13,8 +14,9 @@ import java.util.List;
 
 public class JaysonCollection<D> {
 
-    public JaysonCollection(File collectionFile) {
+    public JaysonCollection(File collectionFile, Class<D> type) {
         this.collectionFile = collectionFile;
+        this.type = type;
     }
 
     public void insertOne(D document) throws IOException {
@@ -27,10 +29,15 @@ public class JaysonCollection<D> {
         writeCollectionFile();
     }
 
+    public List<D> find(JaysonQuery query) throws FileNotFoundException {
+        readCollectionFile();
+        JaysonQueryBuilder queryBuilder = new JaysonQueryBuilder<D>(query, documentsCache);
+        return queryBuilder.list();
+    }
+
     private void readCollectionFile() throws FileNotFoundException {
         JsonReader reader = new JsonReader(new FileReader(collectionFile));
-        Type TYPE = new TypeToken<List<D>>() {
-        }.getType();
+        Type TYPE = TypeToken.getParameterized(List.class, this.type).getType();
         documentsCache = gson.fromJson(reader, TYPE);
     }
 
@@ -44,4 +51,5 @@ public class JaysonCollection<D> {
     private File collectionFile;
     private List<D> documentsCache;
     private Gson gson = new Gson();
+    private final Class<D> type;
 }
