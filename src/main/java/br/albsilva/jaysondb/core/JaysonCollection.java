@@ -29,6 +29,11 @@ public class JaysonCollection<D> {
         writeCollectionFile();
     }
 
+    public List<D> find() throws FileNotFoundException {
+        readCollectionFile();
+        return documentsCache;
+    }
+
     public List<D> find(JaysonQuery query) throws FileNotFoundException {
         readCollectionFile();
         JaysonQueryBuilder queryBuilder = new JaysonQueryBuilder<D>(query, documentsCache);
