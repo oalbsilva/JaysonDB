@@ -14,6 +14,10 @@ public class JaysonDatabase {
         this.dbDir = dbDir;
     }
 
+    public String getName(){
+        return dbDir;
+    }
+
     public JaysonCollection getCollection(String name, Class type) throws IOException {
         String collectionFilePath = String.format("%s/%s.collection.json", dbDir, name);
         File collectionFile = new File(collectionFilePath);

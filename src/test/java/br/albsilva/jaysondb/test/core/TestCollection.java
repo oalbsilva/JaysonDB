@@ -3,6 +3,8 @@ package br.albsilva.jaysondb.test.core;
 import br.albsilva.jaysondb.JaysonClient;
 import br.albsilva.jaysondb.core.JaysonCollection;
 import br.albsilva.jaysondb.core.JaysonDatabase;
+import br.albsilva.jaysondb.core.query.modifiers.JaysonOrder;
+import br.albsilva.jaysondb.core.query.modifiers.JaysonOrderByModifier;
 import br.albsilva.jaysondb.core.query.selectors.comparison.JaysonEQSelector;
 import br.albsilva.jaysondb.test.model.Person;
 import org.junit.After;
@@ -91,11 +93,26 @@ public class TestCollection extends Assert {
         }
     }
 
+    @Test
+    public void personCollectionOrderByAge() {
+        try {
+            JaysonCollection<Person> personCollection = db.getCollection("person", Person.class);
+            personCollection.insertMany(Arrays.asList(createPersonAlexandre(), createPersonSonia()));
+
+            JaysonOrderByModifier orderBy = new JaysonOrderByModifier("mother.age", JaysonOrder.ASCENDING);
+            List<Person> persons = personCollection.find(orderBy);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private Person createPersonAlexandre() {
         Person person = new Person();
         person.setName("Alexandre Silva");
         person.setAge(27);
+        person.setMother(createPersonSonia());
         return person;
     }
 
@@ -103,6 +120,10 @@ public class TestCollection extends Assert {
         Person person = new Person();
         person.setName("Sonia Mara");
         person.setAge(56);
+        Person grandMom = new Person();
+        grandMom.setName("Carolina");
+        grandMom.setAge(78);
+        person.setMother(grandMom);
         return person;
     }
 

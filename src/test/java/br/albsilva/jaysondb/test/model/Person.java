@@ -17,6 +17,11 @@ public class Person {
         this.age = age;
     }
 
+    public void setMother(Person mother) {
+        this.mother = mother;
+    }
+
     private String name;
     private int age;
+    private Person mother;
 }

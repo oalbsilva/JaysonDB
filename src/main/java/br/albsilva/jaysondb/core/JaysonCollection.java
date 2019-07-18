@@ -2,6 +2,7 @@ package br.albsilva.jaysondb.core;
 
 import br.albsilva.jaysondb.core.query.JaysonQuery;
 import br.albsilva.jaysondb.core.query.JaysonQueryBuilder;
+import br.albsilva.jaysondb.core.query.modifiers.JaysonOrderByModifier;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -30,13 +31,20 @@ public class JaysonCollection<D> {
     }
 
     public List<D> find() throws FileNotFoundException {
-        readCollectionFile();
-        return documentsCache;
+        return find(null, null);
     }
 
     public List<D> find(JaysonQuery query) throws FileNotFoundException {
+        return find(query, null);
+    }
+
+    public List<D> find(JaysonOrderByModifier orderBy) throws FileNotFoundException {
+        return find(null, orderBy);
+    }
+
+    public List<D> find(JaysonQuery query, JaysonOrderByModifier orderBy) throws FileNotFoundException {
         readCollectionFile();
-        JaysonQueryBuilder queryBuilder = new JaysonQueryBuilder<D>(query, documentsCache);
+        JaysonQueryBuilder queryBuilder = new JaysonQueryBuilder<D>(query, orderBy, documentsCache);
         return queryBuilder.list();
     }
 
